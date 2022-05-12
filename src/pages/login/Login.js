@@ -1,6 +1,22 @@
+import { useContext, useRef } from "react";
+import { loginCall } from "../../apiCalls";
+import { AuthContext } from "../../context/AuthContext";
 import "./login.css";
+import {CircularProgress} from "@mui/material";
 
 export const Login = () => {
+
+    const email = useRef();
+    const password = useRef();
+
+    const {user, isFetching, error, dispatch} = useContext(AuthContext);
+
+    const handleClick = (e) => {
+        e.preventDefault();
+        
+        loginCall({email: email.current.value, password: password.current.value}, dispatch);
+    }
+    
   return (
 
     <div className="login">
@@ -10,13 +26,17 @@ export const Login = () => {
                 <span className="loginDesc">Connect to friends around the world!</span>
             </div>
             <div className="loginRight">
-                <div className="loginBox">
-                    <input className="loginInput" placeholder="Email"></input>
-                    <input className="loginInput" placeholder="Password"></input>                    
-                    <button className="loginButton">Log In</button>
+                <form className="loginBox" onSubmit={handleClick}>
+                    <input className="loginInput" placeholder="Email" type="email" ref={email} required minLength="6" />
+                    <input className="loginInput" placeholder="Password" type="password" ref={password} required />                    
+                    <button className="loginButton" type="submit" disabled={isFetching}>
+                        {isFetching ? < CircularProgress color="inherit" size="20px"/> :"Log In"}
+                    </button>
                     <span className="loginForgot">Forgot password?</span>
-                    <button className="loginRegisterButton">Create a new Account</button>
-                </div>
+                    <button className="loginRegisterButton">
+                        {isFetching ? < CircularProgress color="inherit" size="20px"/> :"Create a new account"}
+                    </button>
+                </form>
             </div>
         </div>
     </div>
